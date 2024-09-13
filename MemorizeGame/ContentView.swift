@@ -9,21 +9,18 @@ import SwiftUI
 
 struct ContentView: View {
     
-    var emojis: [String] =  ["👻","🎃","🦇","💀", "🕸️", "🕷️", "👹", "🧙🏽", "😱", "🙀", "🍭", "⚰️"]
-        
+    var viewModel: EmojiMemoryGame = EmojiMemoryGame()
+    
     var body: some View {
         ScrollView {
             Cards
         }
-        
-        
     }
     
     var Cards: some View {
-        
         LazyVGrid(columns: [GridItem(), GridItem(), GridItem()], content: {
-            ForEach(emojis.indices, id: \.self) { index in
-                CardView(isFaceUp: true, content: emojis[index])
+            ForEach(viewModel.cards.indices, id: \.self) { index in
+                CardView(card: viewModel.cards[index])
                     .aspectRatio(2/3, contentMode: .fit)
             }
         })
@@ -33,8 +30,7 @@ struct ContentView: View {
 
 struct CardView: View {
     
-    @State var isFaceUp: Bool
-    let content: String
+    let card: MemoryGame<String>.Card
     
     var body: some View {
         ZStack {
@@ -45,19 +41,16 @@ struct CardView: View {
             Group {
                 base.foregroundColor(.white)
                 base.strokeBorder(style: StrokeStyle(lineWidth: 2))
-                Text(content)
+                Text(card.content)
                     .font(.largeTitle)
             }
-            .opacity(isFaceUp ? 1 : 0)
-            base.fill().opacity(isFaceUp ? 0 : 1)
+            .opacity(card.isFaceUp ? 1 : 0)
+            base.fill().opacity(card.isFaceUp ? 0 : 1)
         }
         .foregroundColor(.orange)
         .imageScale(.small)
         .padding()
-        .onTapGesture {
-            print("tapped")
-            isFaceUp.toggle()
-        }
+        
     }
 }
 
@@ -77,5 +70,5 @@ struct CardView: View {
 
 
 #Preview {
-    ContentView()
+    ContentView(viewModel: EmojiMemoryGame())
 }
