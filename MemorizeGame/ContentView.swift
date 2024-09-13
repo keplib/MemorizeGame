@@ -16,17 +16,20 @@ struct ContentView: View {
     var body: some View {
         VStack {
             Cards
+            
+            Spacer()
+            
             CardCountAdjuster
         }
     }
     
     var Cards: some View {
-        HStack {
+        
+        LazyVGrid(columns: [GridItem(), GridItem(), GridItem()], content: {
             ForEach(0..<cardCount, id: \.self) { index in
                 CardView(isFaceUp: true, content: emojis[index])
             }
-        }
-        
+        })
     }
     
     var CardCountAdjuster: some View {
@@ -42,7 +45,7 @@ struct ContentView: View {
         .imageScale(.large)
         .font(.largeTitle)
     }
-
+    
     
     func cardCountAdjuster(by offset: Int, symbol: String) -> some View {
         Button(action: {
@@ -54,7 +57,7 @@ struct ContentView: View {
     }
     
     var CardAdder: some View {
-       cardCountAdjuster(by: +1, symbol:"rectangle.stack.badge.plus")
+        cardCountAdjuster(by: +1, symbol:"rectangle.stack.badge.plus")
     }
     
     var CardRemover: some View {
@@ -73,14 +76,15 @@ struct CardView: View {
             
             let base = RoundedRectangle(cornerRadius: 12)
             
-            if isFaceUp {
+            
+            Group {
                 base.foregroundColor(.white)
                 base.strokeBorder(style: StrokeStyle(lineWidth: 2))
                 Text(content)
                     .font(.largeTitle)
-            } else {
-                base
             }
+            .opacity(isFaceUp ? 1 : 0)
+            base.fill().opacity(isFaceUp ? 0 : 1)
         }
         .foregroundColor(.orange)
         .imageScale(.small)
