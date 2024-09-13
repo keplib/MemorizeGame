@@ -10,58 +10,23 @@ import SwiftUI
 struct ContentView: View {
     
     var emojis: [String] =  ["👻","🎃","🦇","💀", "🕸️", "🕷️", "👹", "🧙🏽", "😱", "🙀", "🍭", "⚰️"]
-    
-    @State var cardCount: Int = 4
-    
+        
     var body: some View {
-        VStack {
+        ScrollView {
             Cards
-            
-            Spacer()
-            
-            CardCountAdjuster
         }
+        
+        
     }
     
     var Cards: some View {
         
         LazyVGrid(columns: [GridItem(), GridItem(), GridItem()], content: {
-            ForEach(0..<cardCount, id: \.self) { index in
+            ForEach(emojis.indices, id: \.self) { index in
                 CardView(isFaceUp: true, content: emojis[index])
+                    .aspectRatio(2/3, contentMode: .fit)
             }
         })
-    }
-    
-    var CardCountAdjuster: some View {
-        HStack {
-            
-            CardRemover
-            
-            Spacer()
-            
-            CardAdder
-        }
-        .padding(.horizontal)
-        .imageScale(.large)
-        .font(.largeTitle)
-    }
-    
-    
-    func cardCountAdjuster(by offset: Int, symbol: String) -> some View {
-        Button(action: {
-            cardCount += offset
-        }, label: {
-            Image(systemName: symbol)
-        })
-        .disabled(cardCount + offset < 1 || cardCount + offset > emojis.count)
-    }
-    
-    var CardAdder: some View {
-        cardCountAdjuster(by: +1, symbol:"rectangle.stack.badge.plus")
-    }
-    
-    var CardRemover: some View {
-        cardCountAdjuster(by: -1, symbol:"rectangle.stack.badge.minus")
     }
 }
 
