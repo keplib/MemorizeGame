@@ -17,8 +17,8 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
         // add numberOfPairsOfCards x 2 cards
         for pairIndex in 0..<numberOfPairsOfCards {
             let content = cardContentFactory(pairIndex)
-            cards.append(Card(content: content))
-            cards.append(Card(content: content))
+            cards.append(Card(content: content, id: "\(pairIndex + 1)a"))
+            cards.append(Card(content: content, id: "\(pairIndex + 1)b"))
         }
     }
     
@@ -30,10 +30,13 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
         cards.shuffle()
     }
     
-    struct Card: Equatable {
+    struct Card: Equatable, Identifiable {
        
+        
         var isFaceUp = true
         var isMatched = false
         let content: CardContent
+        
+        var id: String
     }
 }
