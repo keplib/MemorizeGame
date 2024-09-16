@@ -9,12 +9,13 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @ObservedObject var viewModel: EmojiMemoryGame 
+    @ObservedObject var viewModel: EmojiMemoryGame
     
     var body: some View {
         VStack {
             ScrollView {
-                Cards
+                cards
+                    .animation(.default, value: viewModel.cards)
             }
             Button("Shuffle") {
                 viewModel.shuffle()
@@ -22,7 +23,7 @@ struct ContentView: View {
         }
     }
     
-    var Cards: some View {
+    var cards: some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 85), spacing: 0)], spacing: 0, content: {
             ForEach(viewModel.cards.indices, id: \.self) { index in
                 CardView(viewModel.cards[index])
