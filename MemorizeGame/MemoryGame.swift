@@ -22,15 +22,25 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
         }
     }
     
-    func choose(card: Card) {
+    mutating func choose(_ card: Card) {
         
+        let chosenIndex = index(of: card)
+        cards[chosenIndex!].isFaceUp.toggle()
+    }
+    
+    func index(of card: Card) -> Int? {
+        return cards.firstIndex(of: card)
     }
     
     mutating func shuffle() {
         cards.shuffle()
     }
     
-    struct Card: Equatable, Identifiable {
+    struct Card: Equatable, Identifiable, CustomDebugStringConvertible {
+        var debugDescription: String {
+             "\(id): \(content) \(isFaceUp ? "up" : "down")"
+        }
+        
        
         
         var isFaceUp = true
