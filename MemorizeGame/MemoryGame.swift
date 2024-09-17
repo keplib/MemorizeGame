@@ -22,14 +22,30 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
         }
     }
     
-    mutating func choose(_ card: Card) {
-        
-        let chosenIndex = index(of: card)
-        cards[chosenIndex!].isFaceUp.toggle()
-    }
+    var indexOfTheOneAndOnlyFaceUpCard: Int?
     
-    func index(of card: Card) -> Int? {
-        return cards.firstIndex(of: card)
+    mutating func choose(_ card: Card) {
+        let chosenIndex = cards.firstIndex(of: card)
+        
+        if let chosenIndex {
+            // We only allow to flip cards when they are face down and cards that are not macthed
+            if !cards[chosenIndex].isFaceUp && !cards[chosenIndex].isMatched {
+                if let potentialMatchIndex = indexOfTheOneAndOnlyFaceUpCard {
+                    if cards[chosenIndex].content == cards[potentialMatchIndex].content {
+                        cards[chosenIndex].isMatched = true
+                        cards[potentialMatchIndex].isMatched = true
+                    }
+                    indexOfTheOneAndOnlyFaceUpCard = nil
+                } else {
+                    for index in cards.indices {
+                            cards[index].isFaceUp = false
+                    }
+                    indexOfTheOneAndOnlyFaceUpCard = chosenIndex
+                }
+                
+                cards[chosenIndex].isFaceUp = true
+            }
+        }
     }
     
     mutating func shuffle() {
@@ -38,12 +54,12 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
     
     struct Card: Equatable, Identifiable, CustomDebugStringConvertible {
         var debugDescription: String {
-             "\(id): \(content) \(isFaceUp ? "up" : "down")"
+            "\(id): \(content) \(isFaceUp ? "up" : "down")"
         }
         
-       
         
-        var isFaceUp = true
+        
+        var isFaceUp = false
         var isMatched = false
         let content: CardContent
         
